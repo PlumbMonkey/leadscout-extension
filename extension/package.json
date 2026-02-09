@@ -1,0 +1,13 @@
+{
+  "name": "@leadscout/extension",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.36",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "leadscout",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LeadScout – Chrome Extension + Local Server for lead capture, scoring & outreach",
+  "workspaces": [
+    "shared",
+    "server",
+    "extension"
+  ],
+  "scripts": {
+    "build:shared": "cd shared && npm run build",
+    "build:server": "cd server && npm run build",
+    "build:ext": "cd extension && npm run build",
+    "build": "npm run build:shared && npm run build:server && npm run build:ext",
+    "dev:server": "cd server && npm run dev",
+    "start:server": "cd server && npm start"
+  }
+}

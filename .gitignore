@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.tsbuildinfo
+generate-icons.js
+
+# LeadScout secrets
+server/credentials/
+server/.tokens/
+server/.env
+server/.env.*
+server/logs/

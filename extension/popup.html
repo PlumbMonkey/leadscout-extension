@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeadScout</title>
+  <style>
+    /* ── Reset & base ─────────────────────────────── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 400px;
+      min-height: 200px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      color: #e0e0e0;
+      background: #1a1a2e;
+      padding: 16px;
+    }
+
+    /* ── Header ───────────────────────────────────── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #00d4ff;
+    }
+    .header .version {
+      font-size: 10px;
+      color: #666;
+      align-self: flex-end;
+      margin-bottom: 2px;
+    }
+
+    /* ── Buttons ───────────────────────────────────── */
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    button {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.85; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #btn-analyze { background: #00d4ff; color: #0d0d1a; }
+    #btn-capture { background: #2ecc71; color: #0d0d1a; }
+
+    /* ── Auto-mode toggle ─────────────────────────── */
+    .auto-mode {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      opacity: 0.45;
+    }
+    .auto-mode label { font-size: 12px; }
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle .slider {
+      position: absolute; inset: 0;
+      background: #444;
+      border-radius: 10px;
+      cursor: not-allowed;
+      transition: background 0.2s;
+    }
+    .toggle .slider::before {
+      content: "";
+      position: absolute;
+      width: 14px; height: 14px;
+      left: 3px; top: 3px;
+      background: #888;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    /* ── Status bar ────────────────────────────────── */
+    #status {
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    #status.info    { display: block; background: #16213e; color: #82b1ff; }
+    #status.success { display: block; background: #1b3a26; color: #69f0ae; }
+    #status.error   { display: block; background: #3a1b1b; color: #ff5252; }
+    #status.warn    { display: block; background: #3a351b; color: #ffd740; }
+
+    /* ── Results card ──────────────────────────────── */
+    .results { display: none; }
+    .results.visible { display: block; }
+
+    .card {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .card h3 {
+      font-size: 13px;
+      color: #00d4ff;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #223;
+      padding-bottom: 4px;
+    }
+
+    .field {
+      display: flex;
+      margin-bottom: 4px;
+    }
+    .field .label {
+      width: 100px;
+      font-weight: 600;
+      color: #888;
+      flex-shrink: 0;
+    }
+    .field .value {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    /* ── Score badge ───────────────────────────────── */
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .score-num {
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .tier-badge {
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .tier-A { background: #2ecc71; color: #0d0d1a; }
+    .tier-B { background: #f39c12; color: #0d0d1a; }
+    .tier-C { background: #e74c3c; color: #fff; }
+
+    .evidence {
+      list-style: none;
+      padding: 0;
+    }
+    .evidence li {
+      font-size: 12px;
+      padding: 2px 0;
+    }
+
+    /* ── Outreach section ─────────────────────────── */
+    .outreach-text {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #ccc;
+      margin-bottom: 6px;
+    }
+    .outreach-text strong { color: #00d4ff; }
+
+    /* ── Spinner ───────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid #00d4ff44;
+      border-top-color: #00d4ff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🔍 LeadScout</h1>
+    <span class="version">v1.0 MVP</span>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button id="btn-analyze">⚡ Analyze Page</button>
+    <button id="btn-capture" disabled>📥 Capture Lead</button>
+  </div>
+
+  <!-- Auto-mode -->
+  <div class="auto-mode">
+    <div class="toggle">
+      <input type="checkbox" disabled />
+      <span class="slider"></span>
+    </div>
+    <label>Auto Mode (coming soon)</label>
+  </div>
+
+  <!-- Status -->
+  <div id="status"></div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+
+    <!-- Lead info -->
+    <div class="card">
+      <h3>Lead Info</h3>
+      <div class="field"><span class="label">Name</span><span class="value" id="r-name">—</span></div>
+      <div class="field"><span class="label">Title</span><span class="value" id="r-title">—</span></div>
+      <div class="field"><span class="label">Company</span><span class="value" id="r-company">—</span></div>
+      <div class="field"><span class="label">Location</span><span class="value" id="r-location">—</span></div>
+    </div>
+
+    <!-- Score -->
+    <div class="card">
+      <h3>Score &amp; Tier</h3>
+      <div class="score-row">
+        <span class="score-num" id="r-score">—</span>
+        <span class="tier-badge" id="r-tier">—</span>
+      </div>
+      <ul class="evidence" id="r-evidence"></ul>
+    </div>
+
+    <!-- Outreach -->
+    <div class="card">
+      <h3>Outreach Recommendation</h3>
+      <div class="outreach-text"><strong>Contact:</strong> <span id="r-contact">—</span></div>
+      <div class="outreach-text"><strong>Angle:</strong> <span id="r-angle">—</span></div>
+      <div class="outreach-text"><strong>Hook:</strong> <span id="r-hook">—</span></div>
+      <div class="outreach-text"><strong>CTA:</strong> <span id="r-cta">—</span></div>
+      <div class="outreach-text"><strong>Next step:</strong> <span id="r-next">—</span></div>
+    </div>
+  </div>
+
+  <script src="dist/popup.js" type="module"></script>
+</body>
+</html>
