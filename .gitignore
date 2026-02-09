@@ -6,6 +6,9 @@ generate-icons.js
 # LeadScout secrets
 server/credentials/
 server/.tokens/
+server/logs/
+
+# Env files (keep real envs ignored, track example)
 server/.env
 server/.env.*
-server/logs/
+!server/.env.example
