@@ -23,6 +23,10 @@ const COLUMN_ORDER: (keyof LeadRow)[] = [
   "call_to_action",
   "onboarding_next_step",
   "status",
+  "pipeline_stage",
+  "next_action",
+  "followup_date",
+  "notes",
 ];
 
 async function getSheetsAPI(): Promise<sheets_v4.Sheets> {
@@ -34,7 +38,7 @@ async function getSheetsAPI(): Promise<sheets_v4.Sheets> {
 /** Ensure the header row exists */
 export async function ensureHeaders(): Promise<void> {
   const sheets = await getSheetsAPI();
-  const range = `${CONFIG.SHEET_NAME}!A1:O1`;
+  const range = `${CONFIG.SHEET_NAME}!A1:S1`;
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: CONFIG.SHEET_ID,

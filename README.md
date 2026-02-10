@@ -58,6 +58,20 @@ brave://extensions → Developer mode (top-right) → Load unpacked → select /
 
 ---
 
+## Hunter – Off-LinkedIn Lead Discovery
+
+**New in this version!** [Hunter](hunter/README.md) is a CLI tool that discovers leads off LinkedIn by analyzing public company sites, directories, and job boards. It extracts contact signals, scores candidates, and exports results to JSON/CSV.
+
+**Quick start:**
+```bash
+npm run hunter
+# Results appear in hunter/out/leads-*.json and *.csv
+```
+
+See [hunter/README.md](hunter/README.md) for full documentation.
+
+---
+
 ## Features (MVP)
 
 - **One-click extraction** — reads visible DOM of the current tab (no crawling)

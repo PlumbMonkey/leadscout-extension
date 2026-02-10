@@ -96,6 +96,10 @@ export interface LeadRow {
   call_to_action: string;
   onboarding_next_step: string;
   status: string;            // default "new"
+  pipeline_stage: string;    // default "New"
+  next_action: string;       // default "Connect"
+  followup_date: string;     // default ""
+  notes: string;             // default ""
 }
 
 /** POST /append-lead request body */

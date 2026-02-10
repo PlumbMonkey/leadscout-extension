@@ -9,6 +9,10 @@ const SERVER = "http://localhost:3789";
 // ── DOM refs ──────────────────────────────────────────────
 const btnAnalyze = document.getElementById("btn-analyze") as HTMLButtonElement;
 const btnCapture = document.getElementById("btn-capture") as HTMLButtonElement;
+const tierFilterCheckbox = document.getElementById("tier-filter") as HTMLInputElement;
+const tierWarning = document.getElementById("tier-warning") as HTMLDivElement;
+const tierNegatives = document.getElementById("tier-negatives") as HTMLUListElement;
+const btnCaptureAnyway = document.getElementById("btn-capture-anyway") as HTMLButtonElement;
 const statusEl = document.getElementById("status") as HTMLDivElement;
 const resultsEl = document.getElementById("results") as HTMLDivElement;
 
@@ -29,6 +33,7 @@ const rNext = document.getElementById("r-next")!;
 let lastAnalysis: any = null;
 let analyzing = false;
 let capturing = false;
+let bypassTierFilter = false;  // Track if user clicked "Capture Anyway"
 
 // ── Status helpers ────────────────────────────────────────
 function showStatus(msg: string, type: "info" | "success" | "error" | "warn") {
@@ -128,6 +133,10 @@ btnCapture.addEventListener("click", async () => {
       call_to_action: lastAnalysis.outreach_reco.call_to_action,
       onboarding_next_step: lastAnalysis.outreach_reco.onboarding_next_step,
       status: "new",
+      pipeline_stage: "New",
+      next_action: "Connect",
+      followup_date: "",
+      notes: "",
     };
 
     const resp = await fetch(`${SERVER}/append-lead`, {
@@ -151,6 +160,69 @@ btnCapture.addEventListener("click", async () => {
   } finally {
     capturing = false;
     btnCapture.disabled = false;
+  }
+});
+
+// ── Tier filter change ────────────────────────────────────
+tierFilterCheckbox.addEventListener("change", () => {
+  // Re-render results with new filter state if we have an analysis
+  if (lastAnalysis) {
+    renderResults(lastAnalysis);
+  }
+});
+
+// ── Capture Anyway button (Tier C override) ────────────────
+btnCaptureAnyway.addEventListener("click", async () => {
+  if (capturing || !lastAnalysis) return;
+  capturing = true;
+  btnCaptureAnyway.disabled = true;
+  showStatus("⏳ Writing to Google Sheets...", "info");
+
+  try {
+    const lead = {
+      timestamp_iso: new Date().toISOString(),
+      name: lastAnalysis.normalized_lead.name,
+      title: lastAnalysis.normalized_lead.title,
+      company: lastAnalysis.normalized_lead.company,
+      location: lastAnalysis.normalized_lead.location,
+      page_url: lastAnalysis.normalized_lead.page_url,
+      score: lastAnalysis.score,
+      tier: lastAnalysis.tier,
+      evidence: JSON.stringify(lastAnalysis.evidence),
+      suggested_contact_method: lastAnalysis.outreach_reco.suggested_contact_method,
+      suggested_angle: lastAnalysis.outreach_reco.suggested_angle,
+      outreach_hook: lastAnalysis.outreach_reco.outreach_hook,
+      call_to_action: lastAnalysis.outreach_reco.call_to_action,
+      onboarding_next_step: lastAnalysis.outreach_reco.onboarding_next_step,
+      status: "new",
+      pipeline_stage: "New",
+      next_action: "Connect",
+      followup_date: "",
+      notes: "",
+    };
+
+    const resp = await fetch(`${SERVER}/append-lead`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lead }),
+    });
+
+    const data = await resp.json();
+
+    if (data.duplicate) {
+      showStatus("⚠️ Already captured recently.", "warn");
+    } else if (data.success) {
+      showStatus("✅ Lead captured to Google Sheets!", "success");
+      tierWarning.classList.remove("visible");
+    } else {
+      throw new Error(data.message || "Failed to capture lead.");
+    }
+  } catch (err: any) {
+    console.error("Capture error:", err);
+    showStatus(`❌ ${err.message}`, "error");
+  } finally {
+    capturing = false;
+    btnCaptureAnyway.disabled = false;
   }
 });
 
@@ -182,6 +254,33 @@ function renderResults(data: any) {
   rNext.textContent = reco.onboarding_next_step;
 
   resultsEl.classList.add("visible");
+
+  // ── Tier filtering logic ──────────────────────────
+  bypassTierFilter = false;  // Reset override flag
+  const filterEnabled = tierFilterCheckbox.checked;
+  const isCTier = data.tier === "C";
+
+  if (filterEnabled && isCTier) {
+    // Show warning and block normal capture
+    tierWarning.classList.add("visible");
+    btnCapture.disabled = true;  // Disable normal capture button
+
+    // Show top 2 negatives (lowest scoring evidence keywords)
+    tierNegatives.innerHTML = "";
+    const negatives = [
+      "❌ Low video/production signals",
+      "❌ Limited seniority indicators",
+    ];
+    negatives.slice(0, 2).forEach((neg) => {
+      const li = document.createElement("li");
+      li.textContent = neg;
+      tierNegatives.appendChild(li);
+    });
+  } else {
+    // Normal capture allowed
+    tierWarning.classList.remove("visible");
+    btnCapture.disabled = false;
+  }
 }
 
 // ── Inline extraction function (injected into page context) ──

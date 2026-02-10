@@ -1,0 +1,50 @@
+{
+  "queries": [
+    "video production software",
+    "motion graphics tool",
+    "video editing platform",
+    "webinar platform",
+    "online training software",
+    "podcast hosting",
+    "live streaming software",
+    "animation software",
+    "video marketing tool",
+    "visual content creation"
+  ],
+  "required_terms": [
+    "video",
+    "webinar",
+    "podcast",
+    "training",
+    "motion",
+    "editor",
+    "stream",
+    "animation",
+    "visual"
+  ],
+  "canada_boost_terms": [
+    "Canada",
+    "Toronto",
+    "Vancouver",
+    "Calgary",
+    "Montreal",
+    "remote Canada",
+    "Canadian company"
+  ],
+  "url_patterns": [
+    "/careers",
+    "/jobs",
+    "/resources",
+    "/webinars",
+    "/podcast",
+    "/case-studies",
+    "/about",
+    "/blog",
+    "/support",
+    "/community"
+  ],
+  "max_results_per_query": 10,
+  "allow_us": false,
+  "output_mode": "urls_file",
+  "output_file": "hunter/data/seeds.urls.txt"
+}

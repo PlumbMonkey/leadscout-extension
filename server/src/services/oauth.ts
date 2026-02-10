@@ -35,10 +35,11 @@ function loadOAuthCredentials(): { client_id: string; client_secret: string; red
 
 export function createOAuth2Client() {
   const creds = loadOAuthCredentials();
+  const redirectUri = `http://localhost:${CONFIG.PORT}/oauth2callback`;
   return new google.auth.OAuth2(
     creds.client_id,
     creds.client_secret,
-    creds.redirect_uris[0] || "http://localhost:3789/oauth2callback"
+    redirectUri
   );
 }
 

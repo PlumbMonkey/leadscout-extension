@@ -90,6 +90,24 @@
       transition: transform 0.2s;
     }
 
+    /* ── Tier filter ──────────────────────────────── */
+    .tier-filter {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .tier-filter label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .tier-filter input {
+      cursor: pointer;
+    }
+
     /* ── Status bar ────────────────────────────────── */
     #status {
       padding: 8px;
@@ -175,9 +193,40 @@
     }
     .outreach-text strong { color: #00d4ff; }
 
-    /* ── Spinner ───────────────────────────────────── */
-    .spinner {
-      display: inline-block;
+    /* ── Tier filter warning ──────────────────────── */
+    .tier-warning {
+      display: none;
+      background: #3a351b;
+      border-left: 3px solid #ffd740;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .tier-warning.visible { display: block; }
+    .tier-warning p {
+      margin: 0 0 8px 0;
+      color: #ffd740;
+    }
+    .tier-warning .negatives {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 8px 0;
+    }
+    .tier-warning .negatives li {
+      font-size: 11px;
+      color: #ccc;
+      padding: 2px 0;
+    }
+    .tier-warning button {
+      background: #ffd740;
+      color: #0d0d1a;
+      padding: 6px 12px;
+      font-size: 11px;
+      width: auto;
+      flex: none;
+    }
+    .tier-warning button:hover { opacity: 0.85; }
       width: 14px; height: 14px;
       border: 2px solid #00d4ff44;
       border-top-color: #00d4ff;
@@ -203,6 +252,14 @@
     <button id="btn-capture" disabled>📥 Capture Lead</button>
   </div>
 
+  <!-- Tier filter -->
+  <div class="tier-filter">
+    <label>
+      <input type="checkbox" id="tier-filter" checked />
+      Capture only Tier A/B
+    </label>
+  </div>
+
   <!-- Auto-mode -->
   <div class="auto-mode">
     <div class="toggle">
@@ -214,6 +271,13 @@
 
   <!-- Status -->
   <div id="status"></div>
+
+  <!-- Tier warning (blocked Tier C) -->
+  <div class="tier-warning" id="tier-warning">
+    <p>⚠️ This is Tier C – below your filter threshold.</p>
+    <ul class="negatives" id="tier-negatives"></ul>
+    <button id="btn-capture-anyway">Capture Anyway</button>
+  </div>
 
   <!-- Results -->
   <div class="results" id="results">

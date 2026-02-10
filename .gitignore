@@ -12,3 +12,6 @@ server/logs/
 server/.env
 server/.env.*
 !server/.env.example
+# Hunter outputs (git-ignored, but .gitkeep is tracked)
+hunter/out/*
+!hunter/out/.gitkeep

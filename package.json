@@ -6,14 +6,18 @@
   "workspaces": [
     "shared",
     "server",
-    "extension"
+    "extension",
+    "hunter"
   ],
   "scripts": {
     "build:shared": "cd shared && npm run build",
     "build:server": "cd server && npm run build",
-    "build:ext": "cd extension && npm run build",
-    "build": "npm run build:shared && npm run build:server && npm run build:ext",
+    "build:extension": "cd extension && npm run build",
+    "build:hunter": "cd hunter && npm run build",
+    "build": "npm run build:shared && npm run build:server && npm run build:extension && npm run build:hunter",
     "dev:server": "cd server && npm run dev",
-    "start:server": "cd server && npm start"
+    "start:server": "cd server && npm start",
+    "dev:hunter": "cd hunter && npm run dev",
+    "hunter": "cd hunter && npm run hunter"
   }
 }

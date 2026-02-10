@@ -79,12 +79,13 @@ function generateHook(
   const name = fields.name || "there";
   const company = fields.company ? ` at ${fields.company}` : "";
 
+  // Generate deterministic hooks that emphasize differentiators
   const hooks: Record<OutreachAngle, string> = {
-    Speed: `Hi ${name} – I noticed you're producing video content${company}. I specialize in fast-turnaround video editing (3-4 hour delivery is standard for me) with accessibility baked in. Would a quick pilot clip show you what that speed looks like?`,
-    Accessibility: `Hi ${name} – saw your focus on content${company}. I deliver every project caption-ready, sound-off optimized, and with readable fonts as standard – not an afterthought. Happy to do a free 60-second accessibility audit of an existing asset.`,
-    Repurposing: `Hi ${name} – looks like you're creating great content${company}. I help teams turn one long-form piece into 5+ assets (shorts, audiograms, quote cards) in under a day, all accessibility-ready. Interested in a quick repurposing plan?`,
-    "Overflow capacity": `Hi ${name} – if your team${company} ever hits a crunch on video/design work, I offer overflow capacity with 3-4 hour turnaround and accessibility-ready deliverables. Want to chat for 10 minutes about how that might fit?`,
-    "Training/L&D": `Hi ${name} – I see a focus on training & enablement${company}. I produce learning videos with built-in captions, readable design, and fast iteration cycles. Could a 10-min call explore how that supports your programs?`,
+    Speed: `Hi ${name} – I help teams ship video edits in 3–4 hours when timelines get tight. Would a free 60-second audit of one of your clips show you what that speed looks like?`,
+    Accessibility: `Hi ${name} – every video I deliver comes with captions, readable fonts, and sound-off optimization as standard. Interested in a free accessibility audit of a recent asset?`,
+    Repurposing: `Hi ${name} – I turn one long-form piece into 5+ accessibility-ready shorts in under a day. Could I map out a quick repurposing plan for you?`,
+    "Overflow capacity": `Hi ${name} – when your team${company} hits a video crunch, I offer 3–4 hour turnaround with accessibility baked in. Open to a quick 10-minute call about overflow capacity?`,
+    "Training/L&D": `Hi ${name} – I produce learning videos with built-in captions and readable design, shipped fast. Could a 10-minute call explore how that supports your training programs?`,
   };
 
   let hook = hooks[angle];
